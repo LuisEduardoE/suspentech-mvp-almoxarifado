@@ -1,1 +1,1 @@
-"# Suspentech MVP - Sistema de Gest∆o de Almoxarifado" 
+# Suspentech MVP - Sistema de Gest∆o de Almoxarifado 
