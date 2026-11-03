@@ -82,3 +82,13 @@ def test_senha_nao_fica_em_texto_puro(app):
     assert usuario.senha_hash != "senha123"
     assert usuario.confere_senha("senha123")
     assert not usuario.confere_senha("errada")
+
+
+def test_historico_em_ordem_do_mais_recente(app):
+    from app.servicos import historico_do_item
+
+    item = cadastrar_item("Grampo", "GRA-10", 0)
+    registrar_movimentacao(item.id, "entrada", 10)
+    registrar_movimentacao(item.id, "saida", 4)
+    historico = historico_do_item(item.id)
+    assert [(m.tipo, m.quantidade) for m in historico] == [("saida", 4), ("entrada", 10)]

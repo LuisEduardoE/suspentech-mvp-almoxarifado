@@ -69,3 +69,16 @@ def test_script_no_nome_nao_e_executado(logado):
 def test_logout_encerra_sessao(logado):
     logado.post("/logout", data={"csrf": logado.csrf})
     assert logado.get("/").status_code == 302
+
+
+def test_tela_de_historico(logado):
+    logado.post("/itens/novo", data={"nome": "Mola", "codigo": "PAR-9", "quantidade": "5", "csrf": logado.csrf})
+    item = Item.query.filter_by(codigo="PAR-9").first()
+    logado.post(f"/itens/{item.id}/movimentar", data={"tipo": "saida", "quantidade": "2", "csrf": logado.csrf})
+    html = logado.get(f"/itens/{item.id}/historico").get_data(as_text=True)
+    assert "Histórico de PAR-9" in html
+    assert "Saída" in html
+
+
+def test_historico_de_item_inexistente(logado):
+    assert logado.get("/itens/999/historico").status_code == 404
