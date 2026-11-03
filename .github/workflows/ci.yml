@@ -1,0 +1,30 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  testes:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Baixar o código
+        uses: actions/checkout@v4
+
+      - name: Instalar Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Instalar dependências
+        run: pip install -r requirements.txt
+
+      - name: Verificar se o app inicia (build)
+        run: python -c "from app import create_app; create_app({'SQLALCHEMY_DATABASE_URI': 'sqlite:///:memory:'})"
+
+      - name: Rodar testes unitários e de integração
+        run: python -m pytest -v
