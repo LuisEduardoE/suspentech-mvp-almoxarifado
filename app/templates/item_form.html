@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block titulo %}Novo item{% endblock %}
+{% block conteudo %}
+<section class="cartao">
+  <h1>Cadastrar item</h1>
+  <p class="dica">Campos com * são obrigatórios.</p>
+  <form method="post">
+    <input type="hidden" name="csrf" value="{{ csrf_token() }}">
+
+    <label for="nome">Nome do item *</label>
+    <input id="nome" name="nome" required maxlength="120" value="{{ dados.get('nome', '') }}">
+
+    <label for="codigo">Código *</label>
+    <input id="codigo" name="codigo" required maxlength="40" value="{{ dados.get('codigo', '') }}">
+
+    <label for="quantidade">Quantidade inicial</label>
+    <input id="quantidade" name="quantidade" type="number" min="0" step="1" value="{{ dados.get('quantidade', '0') }}">
+
+    <label for="localizacao">Localização (prateleira, corredor)</label>
+    <input id="localizacao" name="localizacao" maxlength="80" value="{{ dados.get('localizacao', '') }}">
+
+    <div class="acoes">
+      <button type="submit" class="botao">Salvar</button>
+      <a class="botao secundario" href="{{ url_for('estoque.listar') }}">Cancelar</a>
+    </div>
+  </form>
+</section>
+{% endblock %}

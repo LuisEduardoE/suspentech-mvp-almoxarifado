@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block titulo %}Movimentar {{ item.codigo }}{% endblock %}
+{% block conteudo %}
+<section class="cartao">
+  <h1>Entrada / saída</h1>
+  <p><strong>{{ item.codigo }}</strong> · {{ item.nome }}</p>
+  <p>Saldo atual: <strong>{{ item.quantidade_atual }}</strong></p>
+
+  <form method="post">
+    <input type="hidden" name="csrf" value="{{ csrf_token() }}">
+
+    <fieldset>
+      <legend>Tipo de movimentação *</legend>
+      <label class="opcao"><input type="radio" name="tipo" value="entrada" required> Entrada</label>
+      <label class="opcao"><input type="radio" name="tipo" value="saida"> Saída</label>
+    </fieldset>
+
+    <label for="quantidade">Quantidade *</label>
+    <input id="quantidade" name="quantidade" type="number" min="1" step="1" required>
+
+    <div class="acoes">
+      <button type="submit" class="botao">Registrar</button>
+      <a class="botao secundario" href="{{ url_for('estoque.listar') }}">Voltar</a>
+    </div>
+  </form>
+</section>
+{% endblock %}
