@@ -36,9 +36,11 @@
         {{ item.quantidade_atual }}
         {% if item.quantidade_atual == 0 %}<span class="etiqueta zerado">Sem estoque</span>{% endif %}
       </td>
-      <td class="acoes-tabela">
+      <td>
+        <div class="acoes-tabela">
         <a class="botao pequeno" href="{{ url_for('estoque.movimentar', item_id=item.id) }}">Entrada / saída</a>
         <a class="botao pequeno secundario" href="{{ url_for('estoque.historico', item_id=item.id) }}">Histórico</a>
+        </div>
       </td>
     </tr>
     {% endfor %}
