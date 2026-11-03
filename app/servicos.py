@@ -83,3 +83,12 @@ def buscar_itens(termo=None):
             or_(Item.nome.ilike(padrao), Item.codigo.ilike(padrao))
         )
     return consulta.order_by(Item.nome).all()
+
+
+def historico_do_item(item_id):
+    """Movimentacoes do item, da mais recente para a mais antiga (RF04)."""
+    return (
+        Movimentacao.query.filter_by(item_id=item_id)
+        .order_by(Movimentacao.data_hora.desc(), Movimentacao.id.desc())
+        .all()
+    )

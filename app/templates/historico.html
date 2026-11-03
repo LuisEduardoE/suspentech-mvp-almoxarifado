@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block titulo %}Histórico {{ item.codigo }}{% endblock %}
+{% block conteudo %}
+<div class="cabecalho">
+  <h1>Histórico de {{ item.codigo }}</h1>
+  <a class="botao secundario" href="{{ url_for('estoque.listar') }}">Voltar ao estoque</a>
+</div>
+<p>{{ item.nome }} · saldo atual: <strong>{{ item.quantidade_atual }}</strong></p>
+
+{% if movimentacoes %}
+<table>
+  <thead>
+    <tr>
+      <th scope="col">Data e hora</th>
+      <th scope="col">Tipo</th>
+      <th scope="col">Quantidade</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for mov in movimentacoes %}
+    <tr>
+      <td>{{ mov.data_hora.strftime('%d/%m/%Y %H:%M') }}</td>
+      <td>{{ '↑ Entrada' if mov.tipo == 'entrada' else '↓ Saída' }}</td>
+      <td>{{ mov.quantidade }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% else %}
+<p class="vazio">Este item ainda não teve entradas nem saídas.</p>
+{% endif %}
+{% endblock %}

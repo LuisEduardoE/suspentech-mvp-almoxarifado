@@ -4,7 +4,7 @@ from flask import (Blueprint, flash, redirect, render_template, request,
 from .auth import login_obrigatorio
 from .models import Item, db
 from .servicos import (ErroEstoque, buscar_itens, cadastrar_item,
-                       registrar_movimentacao)
+                       historico_do_item, registrar_movimentacao)
 
 estoque_bp = Blueprint("estoque", __name__)
 
@@ -51,6 +51,14 @@ def movimentar(item_id):
         flash(f"Movimentação registrada. Saldo atual: {item.quantidade_atual}.", "ok")
         return redirect(url_for("estoque.listar"))
     return render_template("movimentar.html", item=item)
+
+
+@estoque_bp.route("/itens/<int:item_id>/historico")
+@login_obrigatorio
+def historico(item_id):
+    item = db.get_or_404(Item, item_id)
+    return render_template("historico.html", item=item,
+                           movimentacoes=historico_do_item(item.id))
 
 
 @estoque_bp.app_errorhandler(404)

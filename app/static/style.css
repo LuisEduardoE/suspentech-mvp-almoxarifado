@@ -107,3 +107,4 @@ th { background: #e8ebf0; }
   table tr { display: block; border-bottom: 2px solid var(--borda); padding: 6px 0; }
   table td { display: block; border: 0; padding: 4px 10px; }
 }
+.acoes-tabela { display: flex; gap: 6px; flex-wrap: wrap; }
