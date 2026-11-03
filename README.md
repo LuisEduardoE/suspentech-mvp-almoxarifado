@@ -58,3 +58,13 @@ Os testes rodam sozinhos no GitHub Actions a cada push e a cada Pull Request.
 - Integração com ERP / nota fiscal
 - Cadastro de fornecedores e categorias
 - Leitura de código de barras
+
+## Telas
+
+| Login | Estoque | Cadastro |
+|---|---|---|
+| ![](docs/prints/1-login.png) | ![](docs/prints/3-estoque.png) | ![](docs/prints/2-cadastro.png) |
+
+| Entrada/saída | Saldo insuficiente | Histórico |
+|---|---|---|
+| ![](docs/prints/4-movimentacao.png) | ![](docs/prints/5-erro-saldo.png) | ![](docs/prints/6-historico.png) |
