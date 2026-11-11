@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Suspentech | Almoxarifado</title>
+<style>
+  :root {
+    --bg: #f4f6fb;
+    --card: #ffffff;
+    --text: #1f2937;
+    --muted: #6b7280;
+    --primary: #1d4ed8;
+    --primary-text: #ffffff;
+    --border: #e5e7eb;
+    --row-hover: #f1f5ff;
+    --head-bg: #eef2ff;
+    --ok-bg: #dcfce7;   --ok-text: #166534;
+    --low-bg: #fef3c7;  --low-text: #92400e;
+    --out-bg: #fee2e2;  --out-text: #991b1b;
+    --danger: #dc2626;
+    --shadow: 0 10px 30px rgba(15, 23, 42, .08);
+  }
+
+  /* ===== MODO ALTO CONTRASTE: fundo preto, texto amarelo vivo ===== */
+  body.alto-contraste {
+    --bg: #000000;
+    --card: #000000;
+    --text: #ffff00;
+    --muted: #ffff00;
+    --primary: #ffff00;
+    --primary-text: #000000;
+    --border: #ffff00;
+    --row-hover: #1a1a00;
+    --head-bg: #000000;
+    --ok-bg: #000000;   --ok-text: #ffff00;
+    --low-bg: #000000;  --low-text: #ffff00;
+    --out-bg: #000000;  --out-text: #ffff00;
+    --danger: #ffff00;
+    --shadow: none;
+  }
+  body.alto-contraste .badge { border: 2px solid #ffff00; }
+  body.alto-contraste .card,
+  body.alto-contraste input { border: 2px solid #ffff00; }
+  body.alto-contraste .btn-sec { border-color: #ffff00; }
+  body.alto-contraste .btn-del { border-color: #ffff00; }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: "Segoe UI", system-ui, -apple-system, Roboto, Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    transition: background .2s, color .2s;
+  }
+
+  header {
+    display: flex; align-items: center; justify-content: space-between;
+    flex-wrap: wrap; gap: 12px;
+    padding: 18px 32px;
+    background: var(--card);
+    border-bottom: 1px solid var(--border);
+  }
+  .logo { display: flex; align-items: center; gap: 12px; }
+  .logo-mark {
+    width: 40px; height: 40px; border-radius: 10px;
+    background: var(--primary); color: var(--primary-text);
+    display: grid; place-items: center; font-weight: 800; font-size: 20px;
+  }
+  .logo h1 { margin: 0; font-size: 20px; line-height: 1.1; }
+  .logo span { font-size: 13px; color: var(--muted); }
+
+  button { font-family: inherit; cursor: pointer; }
+  button:focus-visible, input:focus-visible { outline: 3px solid #f59e0b; outline-offset: 2px; }
+  body.alto-contraste button:focus-visible,
+  body.alto-contraste input:focus-visible { outline-color: #ffffff; }
+
+  .btn-contrast {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 10px 18px; border-radius: 999px;
+    border: 2px solid var(--primary);
+    background: var(--primary); color: var(--primary-text);
+    font-weight: 700; font-size: 14px;
+  }
+  body.alto-contraste .btn-contrast { background: #ffff00; color: #000; border-color: #ffff00; }
+
+  main { max-width: 1000px; margin: 32px auto; padding: 0 20px; }
+
+  .summary { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 24px; }
+  .card {
+    background: var(--card); border-radius: 16px;
+    box-shadow: var(--shadow); border: 1px solid var(--border);
+  }
+  .stat { padding: 18px 22px; }
+  .stat small { color: var(--muted); font-size: 13px; }
+  .stat strong { display: block; font-size: 28px; margin-top: 4px; }
+
+  .toolbar {
+    display: flex; justify-content: space-between; align-items: center;
+    flex-wrap: wrap; gap: 12px; padding: 20px 24px 12px;
+  }
+  .toolbar h2 { margin: 0; font-size: 18px; }
+  .toolbar input {
+    padding: 10px 14px; border-radius: 10px; min-width: 240px;
+    border: 1px solid var(--border); background: var(--card); color: var(--text); font-size: 14px;
+  }
+  .toolbar input::placeholder { color: var(--muted); opacity: .8; }
+
+  .table-wrap { overflow-x: auto; padding: 0 12px 16px; }
+  table { width: 100%; border-collapse: collapse; }
+  th, td { padding: 14px 16px; text-align: left; font-size: 15px; }
+  thead th {
+    background: var(--head-bg); color: var(--muted);
+    font-size: 12px; text-transform: uppercase; letter-spacing: .06em;
+    border-bottom: 1px solid var(--border);
+  }
+  thead th:first-child { border-top-left-radius: 10px; }
+  thead th:last-child  { border-top-right-radius: 10px; }
+  tbody tr { border-bottom: 1px solid var(--border); transition: background .15s; }
+  tbody tr:hover { background: var(--row-hover); }
+  td.id { font-weight: 700; color: var(--primary); }
+  td.qtd { font-variant-numeric: tabular-nums; font-weight: 600; }
+
+  .badge { display: inline-block; padding: 3px 10px; border-radius: 999px; font-size: 12px; font-weight: 700; margin-left: 8px; }
+  .badge.ok  { background: var(--ok-bg);  color: var(--ok-text); }
+  .badge.low { background: var(--low-bg); color: var(--low-text); }
+  .badge.out { background: var(--out-bg); color: var(--out-text); }
+
+  .acoes { display: flex; gap: 8px; }
+  .btn-sec, .btn-del {
+    padding: 7px 14px; border-radius: 8px; font-size: 13px; font-weight: 600;
+    background: transparent; border: 1px solid var(--border); color: var(--text);
+  }
+  .btn-sec:hover { background: var(--primary); color: var(--primary-text); border-color: var(--primary); }
+  .btn-del { color: var(--danger); border-color: var(--danger); }
+  .btn-del:hover { background: var(--danger); color: #fff; }
+  body.alto-contraste .btn-del:hover { color: #000; }
+
+  .vazio { text-align: center; color: var(--muted); padding: 28px; display: none; }
+  footer { text-align: center; color: var(--muted); font-size: 13px; padding: 24px; }
+
+  @media (max-width: 600px) {
+    header { padding: 14px 16px; }
+    th, td { padding: 12px 10px; font-size: 14px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">
+    <div class="logo-mark">S</div>
+    <div>
+      <h1>Suspentech</h1>
+      <span>Sistema de Almoxarifado</span>
+    </div>
+  </div>
+  <button id="btnContraste" class="btn-contrast" aria-pressed="false" type="button">
+    <span aria-hidden="true">◐</span> Alto Contraste
+  </button>
+</header>
+
+<main>
+  <section class="summary" aria-label="Resumo do estoque">
+    <div class="card stat"><small>Itens cadastrados</small><strong id="totItens">0</strong></div>
+    <div class="card stat"><small>Total de peças em estoque</small><strong id="totPecas">0</strong></div>
+    <div class="card stat"><small>Itens com estoque baixo</small><strong id="totBaixo">0</strong></div>
+  </section>
+
+  <section class="card" aria-label="Listagem de itens do estoque">
+    <div class="toolbar">
+      <h2>Itens do Estoque</h2>
+      <input type="search" id="busca" placeholder="Buscar por ID ou nome da peça..." aria-label="Buscar item">
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">ID</th>
+            <th scope="col">Nome da Peça</th>
+            <th scope="col">Quantidade</th>
+            <th scope="col">Ações</th>
+          </tr>
+        </thead>
+        <tbody id="corpo"></tbody>
+      </table>
+      <p class="vazio" id="vazio">Nenhum item encontrado.</p>
+    </div>
+  </section>
+</main>
+
+<footer>Suspentech · Almoxarifado · MVP</footer>
+
+<script>
+  // ---------- Dados de exemplo ----------
+  let itens = [
+    { id: "SP-0001", nome: "Feixe de Mola Dianteiro",       qtd: 42 },
+    { id: "SP-0002", nome: "Bucha de Balança",              qtd: 120 },
+    { id: "SP-0003", nome: "Amortecedor Traseiro",          qtd: 8 },
+    { id: "SP-0004", nome: "Grampo de Mola (U-Bolt)",       qtd: 76 },
+    { id: "SP-0005", nome: "Coxim da Cabine",               qtd: 0 },
+    { id: "SP-0006", nome: "Barra Estabilizadora",          qtd: 15 },
+    { id: "SP-0007", nome: "Pino Central de Feixe",         qtd: 5 },
+    { id: "SP-0008", nome: "Bolsa de Ar da Suspensão",      qtd: 33 }
+  ];
+
+  const LIMITE_BAIXO = 10;
+  const corpo = document.getElementById("corpo");
+  const vazio = document.getElementById("vazio");
+  const busca = document.getElementById("busca");
+
+  function status(q) {
+    if (q === 0) return '<span class="badge out">Sem estoque</span>';
+    if (q <= LIMITE_BAIXO) return '<span class="badge low">Baixo</span>';
+    return '<span class="badge ok">OK</span>';
+  }
+
+  function escapar(t) {
+    return String(t).replace(/[&<>"']/g, c => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" }[c]));
+  }
+
+  function render() {
+    const termo = busca.value.trim().toLowerCase();
+    const lista = itens.filter(i => i.id.toLowerCase().includes(termo) || i.nome.toLowerCase().includes(termo));
+
+    corpo.innerHTML = lista.map(i => `
+      <tr>
+        <td class="id">${escapar(i.id)}</td>
+        <td>${escapar(i.nome)}</td>
+        <td class="qtd">${i.qtd} ${status(i.qtd)}</td>
+        <td>
+          <div class="acoes">
+            <button class="btn-sec" data-acao="editar" data-id="${escapar(i.id)}" type="button">Editar</button>
+            <button class="btn-del" data-acao="remover" data-id="${escapar(i.id)}" type="button">Remover</button>
+          </div>
+        </td>
+      </tr>`).join("");
+
+    vazio.style.display = lista.length ? "none" : "block";
+
+    document.getElementById("totItens").textContent = itens.length;
+    document.getElementById("totPecas").textContent = itens.reduce((s, i) => s + i.qtd, 0);
+    document.getElementById("totBaixo").textContent = itens.filter(i => i.qtd <= LIMITE_BAIXO).length;
+  }
+
+  corpo.addEventListener("click", e => {
+    const btn = e.target.closest("button");
+    if (!btn) return;
+    const item = itens.find(i => i.id === btn.dataset.id);
+    if (!item) return;
+
+    if (btn.dataset.acao === "remover") {
+      itens = itens.filter(i => i.id !== item.id);
+    } else if (btn.dataset.acao === "editar") {
+      const novo = prompt("Nova quantidade para " + item.nome + ":", item.qtd);
+      const n = parseInt(novo, 10);
+      if (novo !== null && !isNaN(n) && n >= 0) item.qtd = n;
+    }
+    render();
+  });
+
+  busca.addEventListener("input", render);
+
+  // ---------- Alto Contraste ----------
+  const btnContraste = document.getElementById("btnContraste");
+
+  function aplicarContraste(ativo) {
+    document.body.classList.toggle("alto-contraste", ativo);
+    btnContraste.setAttribute("aria-pressed", ativo);
+    btnContraste.lastChild.textContent = ativo ? " Contraste Normal" : " Alto Contraste";
+    try { localStorage.setItem("altoContraste", ativo ? "1" : "0"); } catch (e) {}
+  }
+
+  btnContraste.addEventListener("click", () => {
+    aplicarContraste(!document.body.classList.contains("alto-contraste"));
+  });
+
+  try {
+    if (localStorage.getItem("altoContraste") === "1") aplicarContraste(true);
+  } catch (e) {}
+
+  render();
+</script>
+</body>
+</html>
